@@ -1,0 +1,21 @@
+import mx.ODBC.unixODBC as odbc
+
+db = odbc.DriverConnect("DSN=ramses17;Database=BestDR13;UID=wsaro;PWD=wsaropw")
+
+# Initiate the Cursor
+cursor = db.cursor()
+
+ # Execute the Query
+sql=("SELECT TOP 10 g.petroMag_r,s.z, g.modelMag_u, g.modelMag_g, g.modelMag_r, g.modelMag_i,g.modelMag_z, g.modelFluxIvar_u ,g.modelFluxIvar_g , g.modelFluxIvar_r,g.modelFluxIvar_i, g.modelFluxIvar_z  \
+FROM galaxy as g						\
+INNER JOIN PhotoObjDR7 as dr7 on dr7.SpecObjID=g.specObjID	\
+INNER JOIN specObj AS s ON s.bestObjID=g.objID	\
+WHERE s.primTarget=0x00000040 ")
+    
+cursor.execute(sql)
+ # Get the results
+
+data=cursor.fetchall()
+print data
+
+db.close()

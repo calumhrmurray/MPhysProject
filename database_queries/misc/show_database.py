@@ -1,0 +1,37 @@
+#/usr/bin/python
+
+# Sample script for connecting to SDSS DR9, running a query, and printing results
+
+import mx.ODBC.unixODBC as odbc
+import numpy as np
+
+# Connect to the database
+db = odbc.DriverConnect("DSN=ramses8;Database=BestDR9;UID=wsaro;PWD=wsaropw")
+
+# Initiate the Cursor
+cursor = db.cursor()
+
+# Execute the Query
+cursor.execute("SELECT * FROM INFORMATION_SCHEMA.COLUMNS")
+
+# Get the results
+row = cursor.fetchone()
+
+# array to store results
+results_array = []
+
+# Loop through results, printing the first two columns
+while row:
+    results_array.append(row)
+    row = cursor.fetchone()
+
+
+results_array_np = np.asarray(results_array)
+print(type(results_array_np))
+np.save('/home/cmurray/results_array.npy',results_array_np)
+
+print(results_array_np)
+
+# Close the database connection
+db.close()
+
