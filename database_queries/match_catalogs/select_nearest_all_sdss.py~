@@ -17,7 +17,11 @@ FROM cmurray..MGS_contour_tbl as m 		\
  INNER JOIN UKIDSSDR10PLUS..lasSourceXDR8PhotoObj AS x 	\
  on s.bestObjID=x.slaveObjid			\
  INNER JOIN UKIDSSDR10PLUS..lasSource as las	\
- on las.sourceID = x.masterObjID' 
+ on las.sourceID = x.masterObjID		\
+ WHERE distanceMins IN (	\
+ 	SELECT MIN(distanceMins)		\
+	FROM UKIDSSDR10PLUS..lasSourceXDR8PhotoObj	\
+	WHERE masterObjID = x.masterObjID) ' 
 	
 cursor.execute(sql_string)
 
@@ -29,8 +33,7 @@ rows = cursor.fetchall()
 print('Results fetched')
 
 # save results in numpy array
-np.save('/home/cmurray/data/sdss_neighbours.npy',rows)
+np.save('/home/cmurray/data/sdss_match.npy',rows)
 
 # Close the database connection
 db.close()
-

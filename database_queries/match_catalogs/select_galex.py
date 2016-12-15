@@ -10,14 +10,14 @@ db = odbc.DriverConnect("DSN=ramses17;UID=wsaro;PWD=wsaropw")
 cursor = db.cursor()
 
 # Execute the Query
-sql_string = 'SELECT x.slaveObjID, x.distanceMins, s.ra, s.dec, m.z \
+sql_string = 'SELECT x.masterObjID, x.distanceMins, s.ra, s.dec, las.ra, las.dec \
 FROM cmurray..MGS_contour_tbl as m 		\
- INNER JOIN BestDR13..specObj as s		\
- on s.specObjID = m.specObjID  			\
- INNER JOIN BestDR13..PhotoObjDR7 as dr7 	\
- on dr7.dr8objid=s.bestObjID 			\
- INNER JOIN UKIDSSDR9PLUS..lasSourceXDR8PhotoObj AS x 	\
- on dr7.dr8objid=x.slaveObjid' 
+ INNER JOIN UKIDSSDR10PLUS..lasSourceXGR6PhotoObjAll AS x 	\
+ on m.lasID=x.masterObjID					\
+ INNER JOIN UKIDSSDR10PLUS..lasSource as las			\
+ on las.sourceID = x.masterObjID				\
+ INNER JOIN GalexGR6..photoobjall as s				\
+ on s.objid = x.slaveObjID'  
 	
 cursor.execute(sql_string)
 
@@ -29,7 +29,7 @@ rows = cursor.fetchall()
 print('Results fetched')
 
 # save results in numpy array
-np.save('/home/cmurray/data/sdss_neighbours.npy',rows)
+np.save('/home/cmurray/data/galex_neighbours.npy',rows)
 
 # Close the database connection
 db.close()

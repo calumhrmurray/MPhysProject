@@ -1,0 +1,26 @@
+#/usr/bin/python
+
+import mx.ODBC.unixODBC as odbc
+import numpy as np
+
+# Connect to the database
+db = odbc.DriverConnect("DSN=ramses17;UID=wsaro;PWD=wsaropw")
+
+# Initiate the Cursor
+cursor = db.cursor()
+
+# show table
+cursor.execute("SELECT * FROM cmurray..MGS_contour_tbl")
+
+print('Cursor execture')
+
+# Get the results
+rows = cursor.fetchall()
+
+print("Results retrieved")
+
+# save results in numpy array
+np.save('/home/cmurray/data/mgs_contour_tbl.npy',rows)
+
+# Close the database connection
+db.close()

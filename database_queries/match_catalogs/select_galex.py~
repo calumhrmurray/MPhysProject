@@ -12,12 +12,12 @@ cursor = db.cursor()
 # Execute the Query
 sql_string = 'SELECT x.masterObjID, x.distanceMins, s.ra, s.dec, las.ra, las.dec \
 FROM cmurray..MGS_contour_tbl as m 		\
- INNER JOIN UKIDSSDR10PLUS..lasSourceXwise_allskysc AS x 	\
+ INNER JOIN UKIDSSDR10PLUS..lasSourceXGR6PhotoObjAll AS x 	\
  on m.lasID=x.masterObjID					\
  INNER JOIN UKIDSSDR10PLUS..lasSource as las			\
  on las.sourceID = x.masterObjID				\
- INNER JOIN WISE..wise_allskysc as s				\
- on s.cntr = x.slaveObjID' 
+ INNER JOIN GalexGR6plus7..photoobjall as s				\
+ on s.objid = x.slaveObjID'  
 	
 cursor.execute(sql_string)
 
@@ -29,7 +29,7 @@ rows = cursor.fetchall()
 print('Results fetched')
 
 # save results in numpy array
-np.save('/home/cmurray/data/wise_neighbours.npy',rows)
+np.save('/home/cmurray/data/galex_neighbours.npy',rows)
 
 # Close the database connection
 db.close()

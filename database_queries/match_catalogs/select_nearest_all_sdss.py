@@ -10,14 +10,18 @@ db = odbc.DriverConnect("DSN=ramses17;UID=wsaro;PWD=wsaropw")
 cursor = db.cursor()
 
 # Execute the Query
-sql_string = 'SELECT x.slaveObjID, x.distanceMins, s.ra, s.dec, m.z \
+sql_string = 'SELECT x.slaveObjID, x.distanceMins, s.ra, s.dec, las.ra, las.dec, m.z \
 FROM cmurray..MGS_contour_tbl as m 		\
  INNER JOIN BestDR13..specObj as s		\
  on s.specObjID = m.specObjID  			\
- INNER JOIN BestDR13..PhotoObjDR7 as dr7 	\
- on dr7.dr8objid=s.bestObjID 			\
- INNER JOIN UKIDSSDR9PLUS..lasSourceXDR8PhotoObj AS x 	\
- on dr7.dr8objid=x.slaveObjid' 
+ INNER JOIN UKIDSSDR10PLUS..lasSourceXDR8PhotoObj AS x 	\
+ on s.bestObjID=x.slaveObjid			\
+ INNER JOIN UKIDSSDR10PLUS..lasSource as las	\
+ on las.sourceID = x.masterObjID		\
+ WHERE distanceMins IN (	\
+ 	SELECT MIN(distanceMins)		\
+	FROM UKIDSSDR10PLUS..lasSourceXDR8PhotoObj	\
+	WHERE masterObjID = x.masterObjID) ' 
 	
 cursor.execute(sql_string)
 
@@ -29,7 +33,7 @@ rows = cursor.fetchall()
 print('Results fetched')
 
 # save results in numpy array
-np.save('/home/cmurray/data/sdss_neighbours.npy',rows)
+np.save('/home/cmurray/data/sdss_all_match.npy',rows)
 
 # Close the database connection
 db.close()
