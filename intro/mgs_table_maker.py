@@ -23,12 +23,13 @@ kcorrect.load_filters()
 # form of input for fit_coeff
 # redshift umaggies gmaggies rmaggies imaggies zmaggies uinvvar ginvvar rinvvar iinvvar zinvvar
 # output: redshift u_rec g_rec r_rec i_rec z_rec
+obj = []
 specObj = []    
 x = []
 y = []
 redshift_array = []
 
-array = np.load('/home/calum/Documents/MPhysProj/mgs_sample/mgs_array.npy')
+array = np.load('/home/calum/Documents/Mphys_data/mgs_multiwavelength/final_mgs_array.npy')
 
 print('Number of results:',len(array))
 print('Starting for loop...')
@@ -50,15 +51,18 @@ for row in array:
     z = k_coeff[0]
     if z > 0:
         if np.isnan(y_val):
+            # why wouldn't y_val be a number?
             print('do not worry, everything is fine now')
         else:
             x_val = float(row[0])-5*(math.log(cosmo.luminosity_distance(z).to(u.pc).value/10 ,10))
+            obj.append(row[13])
             specObj.append(row[12])
             x.append(x_val)
             y.append(y_val)
             redshift_array.append(z)
-    
+
+print('Rows in output table',len(obj))
                 
-table = np.array([specObj,x,y,redshift_array])
-np.save('/home/calum/Documents/MPhysProj/data/master_db_tbl.npy',table)
+table = np.array([obj,specObj,x,y,redshift_array])
+np.save('/home/calum/Documents/Mphys_data/mgs_multiwavelength/init_mgs_multiwavelength.npy',table)
             
