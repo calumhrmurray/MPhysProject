@@ -62,4 +62,4 @@ def db_plot(file_name):
     plot_contour(s_x,s_y)
 
    
-db_plot('/home/calum/Documents/Mphys_data/misc/galaxy_zoo_classifications.npy')
+db_plot('/home/calum/Documents/MPhysProj/data/galaxy_zoo_classifications.npy')
