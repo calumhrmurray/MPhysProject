@@ -11,6 +11,16 @@ db = odbc.DriverConnect(connection_cmd)
 # Initiate the Cursor
 cursor = db.cursor()
 
+
+# Execute the Query
+cursor.execute("SELECT * FROM cmurray.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'Customers'")
+
+# Get the results
+rows = cursor.fetchall()
+
+for row in rows:
+	print(row)
+
 # Execute the Query
 cursor.execute("SELECT TOP 10 * FROM mgs_multiwavelength")
 
@@ -19,11 +29,6 @@ rows = cursor.fetchall()
 
 for row in rows:
 	print(row)
-
-# show table
-cursor.execute("SELECT COUNT(lasID) FROM cmurray..mgs_multiwavelength")
-# Get the results
-print(cursor.fetchall())
 
 # show table
 cursor.execute("SELECT COUNT(objID) FROM cmurray..mgs_multiwavelength")

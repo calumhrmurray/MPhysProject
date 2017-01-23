@@ -11,6 +11,16 @@ db = odbc.DriverConnect(connection_cmd)
 # Initiate the Cursor
 cursor = db.cursor()
 
+
+# Execute the Query
+cursor.execute("SELECT * FROM cmurray.INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'mgs_multiwavelength'")
+
+# Get the results
+rows = cursor.fetchall()
+
+for row in rows:
+	print(row)
+
 # Execute the Query
 cursor.execute("SELECT TOP 10 * FROM mgs_multiwavelength")
 

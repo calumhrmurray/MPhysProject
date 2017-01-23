@@ -17,27 +17,35 @@ cursor.execute("ALTER TABLE cmurray..mgs_multiwavelength ADD lasID bigint;")
 # query for lasID
 cursor.execute("					\
 UPDATE cmurray..mgs_multiwavelength 			\
-SET cmurray..mgs_multiwavelength.lasID = x.masterObjID	\
-	FROM cmurray..mgs_multiwavelength as m 		\
+SET cmurray..mgs_multiwavelength.lasID = UKIDSSDR10PLUS..lasSourceXDR8PhotoObj.masterObjID	\
+FROM cmurray..mgs_multiwavelength as m 		\
  	INNER JOIN UKIDSSDR10PLUS..lasSourceXDR8PhotoObj AS x 	\
  	on m.objID=x.slaveObjid			\
  	INNER JOIN UKIDSSDR10PLUS..lasSource as las	\
  	on las.sourceID = x.masterObjID		\
- 	WHERE distanceMins < 0.005					\
-	AND distanceMins IN (			\
+	WHERE distanceMins IN (			\
  		SELECT MIN(distanceMins)		\
 		FROM UKIDSSDR10PLUS..lasSourceXDR8PhotoObj	\
-		WHERE masterObjID = x.masterObjID) ;")
+		WHERE masterObjID = x.masterObjID);")
  
-# show table
+# show table (WHERE lasID != 0 does not matter)
 cursor.execute("SELECT COUNT(lasID) 			\
-		FROM cmurray..mgs_multiwavelength	\
-		WHERE lasID != 0")
+		FROM cmurray..mgs_multiwavelength")
 
 # Get the results
 rows = cursor.fetchall()
 
 print(rows)
+
+# show table (WHERE lasID != 0 does not matter)
+cursor.execute("SELECT COUNT(*) 			\
+		FROM cmurray..mgs_multiwavelength")
+
+# Get the results
+rows = cursor.fetchall()
+
+print(rows)
+
 
 # Commit the change
 #db.commit()
