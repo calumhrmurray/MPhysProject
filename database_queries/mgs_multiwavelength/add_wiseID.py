@@ -19,14 +19,14 @@ cursor.execute("					\
 UPDATE cmurray..mgs_multiwavelength 			\
 SET cmurray..mgs_multiwavelength.galexID = x.slaveObjID	\
 FROM cmurray..mgs_multiwavelength as m 		\
-	INNER JOIN UKIDSSDR10PLUS..lasSourceXGR6PhotoObjAll AS x \
+	INNER JOIN UKIDSSDR10PLUS..lasSourceXwise_allskysc AS x \
 	on m.lasID=x.masterObjID				\
  	INNER JOIN UKIDSSDR10PLUS..lasSource as las	\
  	on las.sourceID = x.masterObjID		\
  	INNER JOIN GalexGR6..photoObjAll as p		\
  	on p.objID = x.slaveObjID  			\
 	WHERE x.distanceMins IN (SELECT MIN(distanceMins) \
-		FROM UKIDSSDR10PLUS..lasSourceXGR6PhotoObjAll as in_x	\
+		FROM UKIDSSDR10PLUS..lasSourceXwise_allskysc as in_x	\
 		WHERE in_x.masterObjID = m.lasID);")
 
  
@@ -78,7 +78,7 @@ cursor.execute("ALTER TABLE cmurray..mgs_multiwavelength ADD galex_smallID bigin
 # query for lasID
 cursor.execute("					\
 UPDATE cmurray..mgs_multiwavelength 			\
-SET cmurray..mgs_multiwavelength.galex_smallID = x.slaveObjID	\
+SET cmurray..mgs_multiwavelength.galex_largeID = x.slaveObjID	\
 FROM cmurray..mgs_multiwavelength as m 		\
 	INNER JOIN UKIDSSDR10PLUS..lasSourceXGR6PhotoObjAll AS x \
 	on m.lasID=x.masterObjID				\
