@@ -11,7 +11,7 @@ cursor = db.cursor()
 
 # Add lasID column to the table ##########################################
 # Execute the Query
-cursor.execute("ALTER TABLE cmurray..mgs_multiwavelength ADD lasID bigint;") 
+cursor.execute("ALTER TABLE cmurray..mgs_multiwavelength ADD galexID bigint;") 
 
 # Add lasIDs into the table
 # query for lasID
@@ -19,15 +19,19 @@ cursor.execute("					\
 UPDATE cmurray..mgs_multiwavelength 			\
 SET cmurray..mgs_multiwavelength.lasID = x.masterObjID	\
 FROM cmurray..mgs_multiwavelength as m 		\
- 	INNER JOIN UKIDSSDR10PLUS..lasSourceXDR8PhotoObj AS x 	\
- 	on m.objID=x.slaveObjid			\
+	INNER JOIN UKIDSSDR10PLUS..lasSourceXGR6PhotoObjAll AS x \
+	on m.lasID=x.masterObjID				\
+ 	INNER JOIN UKIDSSDR10PLUS..lasSource as las	\
+ 	on las.sourceID = x.masterObjID		\
+ 	INNER JOIN GalexGR6..photoObjAll as p		\
+ 	on p.objID = x.slaveObjID  			\
 	WHERE x.distanceMins IN (SELECT MIN(distanceMins) \
-		FROM UKIDSSDR10PLUS..lasSourceXDR8PhotoObj as in_x	\
-		WHERE in_x.slaveObjid = m.objID);")
+		FROM UKIDSSDR10PLUS..lasSourceXGR6PhotoObjAll as in_x	\
+		WHERE in_x.masterObjID = m.lasID);")
 
  
 # show table (WHERE lasID != 0 does not matter)
-cursor.execute("SELECT COUNT(lasID), COUNT(DISTINCT lasID)	\
+cursor.execute("SELECT COUNT(galexID), COUNT(DISTINCT galexID)	\
 		FROM cmurray..mgs_multiwavelength")
 
 # Get the results
@@ -59,7 +63,7 @@ cursor.execute("SELECT COUNT(ukidds_largeID), COUNT(DISTINCT ukidds_largeID)	\
 # Get the results
 rows = cursor.fetchall()
 
-print('ukidds_largeID:',rows)
+print('galex_largeID:',rows)
 
 
 # Add ukidds_smallID column to the table ##########################################
@@ -86,7 +90,7 @@ cursor.execute("SELECT COUNT(ukidds_smallID), COUNT(DISTINCT ukidds_smallID)	\
 # Get the results
 rows = cursor.fetchall()
 
-print('ukidds_smallID',rows)
+print('galex_smallID',rows)
 
 
 # Commit the change

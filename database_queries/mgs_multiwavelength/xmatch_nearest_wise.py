@@ -9,20 +9,19 @@ db = odbc.DriverConnect("DSN=ramses17;UID=wsaro;PWD=wsaropw")
 # Initiate the Cursor
 cursor = db.cursor()
 
-
 # nearest ###########################################
 # Execute the Query
-sql_string = 'SELECT x.slaveObjID, x.distanceMins, s.ra, s.dec, las.ra, las.dec, m.z \
+sql_string = 'SELECT x.slaveObjID, x.distanceMins, p.ra, p.dec, las.ra, las.dec, m.z \
 FROM cmurray..mgs_multiwavelength as m 		\
- 	INNER JOIN BestDR13..specObj as s		\
- 	on s.specObjID = m.specObjID  			\
- 	INNER JOIN UKIDSSDR10PLUS..lasSourceXDR8PhotoObj AS x 	\
- 	on m.objID=x.slaveObjid			\
+	INNER JOIN UKIDSSDR10PLUS..lasSourceXwise_allskysc AS x \
+	on m.lasID=x.masterObjID				\
  	INNER JOIN UKIDSSDR10PLUS..lasSource as las	\
  	on las.sourceID = x.masterObjID		\
+ 	INNER JOIN WISE..wise_allskysc as p		\
+ 	on p.cntr = x.slaveObjID  			\
 	WHERE x.distanceMins IN (SELECT MIN(distanceMins) \
-		FROM UKIDSSDR10PLUS..lasSourceXDR8PhotoObj as in_x	\
-		WHERE in_x.slaveObjid = m.objID) ' 
+		FROM UKIDSSDR10PLUS..lasSourceXwise_allskysc as in_x	\
+		WHERE in_x.masterObjID = las.sourceID); ' 
 	
 cursor.execute(sql_string)
 
@@ -34,21 +33,21 @@ rows = cursor.fetchall()
 print('Results fetched', len(rows))
 
 # save results in numpy array
-np.save('/home/cmurray/data/xmatch_nearest_sdss.npy',rows)
+np.save('/home/cmurray/data/xmatch_nearest_wise.npy',rows)
 
 # small sample ######################################
 # Execute the Query
-sql_string = 'SELECT x.slaveObjID, x.distanceMins, s.ra, s.dec, las.ra, las.dec, m.z \
+sql_string = 'SELECT x.slaveObjID, x.distanceMins, p.ra, p.dec, las.ra, las.dec, m.z \
 FROM cmurray..mgs_multiwavelength as m 		\
- 	INNER JOIN BestDR13..specObj as s		\
- 	on s.specObjID = m.specObjID  			\
- 	INNER JOIN UKIDSSDR10PLUS..lasSourceXDR8PhotoObj AS x 	\
- 	on m.objID=x.slaveObjid			\
+	INNER JOIN UKIDSSDR10PLUS..lasSourceXwise_allskysc AS x \
+	on m.lasID=x.masterObjID				\
  	INNER JOIN UKIDSSDR10PLUS..lasSource as las	\
  	on las.sourceID = x.masterObjID		\
+ 	INNER JOIN WISE..wise_allskysc as p		\
+ 	on p.cntr = x.slaveObjID  			\
 	WHERE x.distanceMins < 0.004 AND x.distanceMins IN (SELECT MIN(distanceMins) \
-		FROM UKIDSSDR10PLUS..lasSourceXDR8PhotoObj as in_x	\
-		WHERE in_x.slaveObjid = m.objID); ' 
+		FROM UKIDSSDR10PLUS..lasSourceXwise_allskysc as in_x	\
+		WHERE in_x.masterObjID = m.lasID); ' 
 	
 cursor.execute(sql_string)
 
@@ -60,21 +59,21 @@ rows = cursor.fetchall()
 print('Results fetched', len(rows))
 
 # save results in numpy array
-np.save('/home/cmurray/data/xmatch_small_sdss.npy',rows)
+np.save('/home/cmurray/data/xmatch_small_wise.npy',rows)
 
 # large sample ######################################
 # Execute the Query
-sql_string = 'SELECT x.slaveObjID, x.distanceMins, s.ra, s.dec, las.ra, las.dec, m.z \
+sql_string = 'SELECT x.slaveObjID, x.distanceMins, p.ra, p.dec, las.ra, las.dec, m.z \
 FROM cmurray..mgs_multiwavelength as m 		\
- 	INNER JOIN BestDR13..specObj as s		\
- 	on s.specObjID = m.specObjID  			\
- 	INNER JOIN UKIDSSDR10PLUS..lasSourceXDR8PhotoObj AS x 	\
- 	on m.objID=x.slaveObjid			\
+	INNER JOIN UKIDSSDR10PLUS..lasSourceXwise_allskysc AS x \
+	on m.lasID=x.masterObjID				\
  	INNER JOIN UKIDSSDR10PLUS..lasSource as las	\
  	on las.sourceID = x.masterObjID		\
+ 	INNER JOIN WISE..wise_allskysc as p		\
+ 	on p.cntr = x.slaveObjID  			\
 	WHERE x.distanceMins < 0.008 AND x.distanceMins IN (SELECT MIN(distanceMins) \
-		FROM UKIDSSDR10PLUS..lasSourceXDR8PhotoObj as in_x	\
-		WHERE in_x.slaveObjid = m.objID) ' 
+		FROM UKIDSSDR10PLUS..lasSourceXwise_allskysc as in_x	\
+		WHERE in_x.masterObjID = m.lasID); ' 
 	
 cursor.execute(sql_string)
 
@@ -86,7 +85,7 @@ rows = cursor.fetchall()
 print('Results fetched', len(rows))
 
 # save results in numpy array
-np.save('/home/cmurray/data/xmatch_large_sdss.npy',rows)
+np.save('/home/cmurray/data/xmatch_large_wise.npy',rows)
 
 # Close the database connection
 db.close()
