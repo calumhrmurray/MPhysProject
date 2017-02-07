@@ -17,7 +17,8 @@ cursor.execute("SELECT COUNT(DISTINCT x.masterObjID), COUNT(DISTINCT x.slaveObjI
  	on m.objID=x.slaveObjid			\
 	WHERE x.distanceMins IN (SELECT MIN(distanceMins) \
 		FROM UKIDSSDR10PLUS..lasSourceXDR8PhotoObj as in_x	\
-		WHERE in_x.slaveObjid = m.objID);")
+		WHERE in_x.slaveObjid = m.objID		\
+		AND in_x.masterObjID = x.masterObjID);")
 
 # Get the results
 rows = cursor.fetchall()
@@ -54,9 +55,5 @@ rows = cursor.fetchall()
 
 print(rows)
 
-
-
-# Commit the change
-#db.commit()
 # Close the database connection
 db.close()

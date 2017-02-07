@@ -22,7 +22,8 @@ FROM cmurray..mgs_multiwavelength as m 		\
  	on las.sourceID = x.masterObjID		\
 	WHERE x.distanceMins IN (SELECT MIN(distanceMins) \
 		FROM UKIDSSDR10PLUS..lasSourceXDR8PhotoObj as in_x	\
-		WHERE in_x.slaveObjid = m.objID) ' 
+		WHERE in_x.masterObjID = x.masterObjID	\
+		AND in_x.slaveObjID = m.objID)	 ' 
 	
 cursor.execute(sql_string)
 

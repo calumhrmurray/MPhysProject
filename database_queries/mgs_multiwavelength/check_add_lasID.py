@@ -17,7 +17,25 @@ cursor.execute("SELECT COUNT(DISTINCT x.masterObjID), COUNT(DISTINCT x.slaveObjI
  	on m.objID=x.slaveObjid			\
 	WHERE x.distanceMins IN (SELECT MIN(distanceMins) \
 		FROM UKIDSSDR10PLUS..lasSourceXDR8PhotoObj as in_x	\
-		WHERE in_x.slaveObjid = m.objID);")
+		WHERE in_x.slaveObjid = m.objID		\
+		AND in_x.masterObjID = x.masterObjID);")
+
+# Get the results
+rows = cursor.fetchall()
+
+print(rows)
+
+
+# query for lasID and count
+cursor.execute("SELECT COUNT(DISTINCT x.masterObjID), COUNT(DISTINCT x.slaveObjID),		\
+	 COUNT(m.objID), COUNT(DISTINCT m.objID)	\
+	FROM cmurray..mgs_multiwavelength as m 		\
+ 	INNER JOIN UKIDSSDR10PLUS..lasSourceXDR8PhotoObj AS x 	\
+ 	on m.objID=x.slaveObjid			\
+	WHERE x.distanceMins IN (SELECT MIN(distanceMins) \
+		FROM UKIDSSDR10PLUS..lasSourceXDR8PhotoObj as in_x	\
+		WHERE in_x.slaveObjid = m.objID		\
+		);")
 
 # Get the results
 rows = cursor.fetchall()
