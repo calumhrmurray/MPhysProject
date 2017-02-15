@@ -2,6 +2,7 @@
 
 import mx.ODBC.unixODBC as odbc
 import numpy as np
+import os
 
 # Connect to the database
 db = odbc.DriverConnect("DSN=ramses17;UID=wsaro;PWD=wsaropw")
@@ -18,16 +19,25 @@ cursor.execute(sql_string)
 
 print('Cursor executed')
 
-rows = []
-# Get the results
-row = cursor.fetchone()
-while row is not None:
-	rows.append(cursor.fetchone())
+# Get the results and save to array
+if os.path.exists('/home/cmurray/data/ra_sdss_catalog.gz'):
+    os.remove('/home/cmurray/data/ra_sdss_catalog.gz')
+    
+if os.path.exists('/home/cmurray/data/dec_sdss_catalog.gz'):
+    os.remove('/home/cmurray/data/dec_sdss_catalog.gz')
+
+ra=open('/home/cmurray/data/ra_sdss_catalog.gz','ab')
+dec=open('/home/cmurray/data/dec_sdss_catalog.gz','ab')
+
+for row in cursor:
+    np.savetxt(ra,[row[0]])
+    np.savetxt(dec,[row[1]])
+    
+ra.close()
+dec.close()
 
 print('SDSS results fetched')
 
-# save results in numpy array
-np.save('/home/cmurray/data/sdss_catalog.npy',rows)
 
 # Close the database connection
 db.close()

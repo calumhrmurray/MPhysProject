@@ -8,24 +8,49 @@ db = odbc.DriverConnect("DSN=ramses17;UID=wsaro;PWD=wsaropw")
 
 # Initiate the Cursor
 cursor = db.cursor()
- 
-# show table links, large
-cursor.execute("SELECT COUNT(*)	\
-		FROM cmurray..mgs_multiwavelength as m			\
- 			INNER JOIN UKIDSSDR10PLUS..lasSource AS ukidds	\
- 			on m.ukidds_largeID = ukidds.sourceID 			\
-			INNER JOIN UKIDSSDR10PLUS..lasSourceXwise_allskysc AS wise 	\
-			on m.galex_largeID = wise.cntr					\
-			INNER JOIN UKIDSSDR10PLUS..lasSourceXGR6PhotoObjAll AS galex 	\
-			on m.wise_largeID = wise.objID					\
-		WHERE ukidds_largeID IS NOT NULL			\
-		AND galex_largeID IS NOT NULL				\
-		AND wise_largeID IS NOT NULL")
 
-# Get the results
+# just gets ra and dec for every value in each of the tables!
+
+# Execute the Query
+sql_string = 'COUNT (wise.ra) FROM WISE..wise_allskysc as wise; ' 
+	
+cursor.execute(sql_string)
+
+print('Cursor executed')
+
 rows = cursor.fetchall()
 
-print('Result:',rows)
+print('WISE results fetched',rows)
+
+# save results in numpy array
+np.save('/home/cmurray/data/wise_catalog.npy',rows)
+
+##################################
+
+# Execute the Query
+sql_string = 'COUNT (s.dec) FROM BestDR13..photoObjAll as s; ' 
+	
+cursor.execute(sql_string)
+
+print('Cursor executed')
+
+rows = cursor.fetchall()
+
+print('SDSS results fetched',rows)
+
+
+#####################################
+
+# Execute the Query
+sql_string = 'COUNT (p.dec) FROM GalexGR6..photoObjAll as p; ' 
+	
+cursor.execute(sql_string)
+
+print('Cursor executed')
+
+rows = cursor.fetchall()
+
+print('GALEX results fetched',rows)
 
 
 # Close the database connection
