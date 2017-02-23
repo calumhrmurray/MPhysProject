@@ -13,7 +13,7 @@ cursor = db.cursor()
 # just gets ra and dec for every value in each of the tables
 
 # Execute the Query
-sql_string = 'SELECT ra, dec, objID FROM BestDR13..photoObjAll; ' 
+sql_string = 'SELECT ra, dec FROM BestDR13..photoObjAll; ' 
 	
 cursor.execute(sql_string)
 
@@ -25,17 +25,14 @@ if os.path.exists('/home/cmurray/data/sdss_coords.fits'):
 
 ra_array = []
 dec_array = []
-obj_array = []
 
 for row in cursor:
 	ra_array.append(row[0])
 	dec_array.append(row[1])
-	obj_array.append(row[2])	
     
 tbhdu = fits.BinTableHDU.from_columns(				       \
 		[fits.Column(name='RA', format='E', array=ra_array),   \
-		fits.Column(name='DEC', format='E', array=dec_array),  \
-		fits.Column(name='OBJ', format='K', array=obj_array)])
+		fits.Column(name='DEC', format='E', array=dec_array)])
 
 tbhdu.writeto('/home/cmurray/data/sdss_coords.fits')
 
