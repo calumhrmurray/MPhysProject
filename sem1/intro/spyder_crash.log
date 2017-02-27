@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "/home/calum/anaconda3/lib/python3.5/site-packages/spyderlib/spyder.py", line 2331, in main
+    mainwindow = run_spyder(app, options, args)
+  File "/home/calum/anaconda3/lib/python3.5/site-packages/spyderlib/spyder.py", line 2215, in run_spyder
+    main.setup()
+  File "/home/calum/anaconda3/lib/python3.5/site-packages/spyderlib/spyder.py", line 752, in setup
+    from spyderlib.plugins.inspector import ObjectInspector
+  File "/home/calum/anaconda3/lib/python3.5/site-packages/spyderlib/plugins/inspector.py", line 47, in <module>
+    from spyderlib.utils.inspector.sphinxify import (CSS_PATH, sphinxify,
+  File "/home/calum/anaconda3/lib/python3.5/site-packages/spyderlib/utils/inspector/sphinxify.py", line 31, in <module>
+    from sphinx.application import Sphinx
+  File "/home/calum/anaconda3/lib/python3.5/site-packages/Sphinx-1.3.5-py3.5.egg/sphinx/application.py", line 30, in <module>
+    from sphinx import package_dir, locale
+  File "<frozen importlib._bootstrap>", line 969, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 958, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 673, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 658, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 747, in get_code
+  File "<frozen importlib._bootstrap_external>", line 816, in get_data
+KeyboardInterrupt
