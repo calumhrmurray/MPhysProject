@@ -1,0 +1,46 @@
+#/usr/bin/python
+
+# only u,r, mr petro, z, petroR50_r (to calculate surface brightness)
+
+import mx.ODBC.unixODBC as odbc
+import numpy as np
+
+# Connect to the database
+db = odbc.DriverConnect("DSN=ramses17;UID=wsaro;PWD=wsaropw")
+
+# Initiate the Cursor
+cursor = db.cursor()
+
+####### get all MGS in ukidds within las extended source ##########################################
+cursor.execute("SELECT sdss.modelMag_u, sdss.modelMag_r, mr_petro, m.z, sdss.petroR50_r \
+		FROM cmurray..mgs_multiwavelength as m			\
+ 			INNER JOIN UKIDSSDR10PLUS..lasExtendedSource AS ukidds	\
+ 			on m.ukidds_largeID = ukidds.sourceID 		\
+			INNER JOIN  BestDR13..galaxy AS sdss		\
+			on m.specObjID = sdss.specObjID	")
+
+# Get the results
+rows = cursor.fetchall()
+
+print('Result:', len(rows))
+
+np.save('/home/cmurray/data/ukidss_allbands.npy',rows)
+
+####### get all MGS in ukidds not within las extended source ##########################################
+cursor.execute("SELECT sdss.modelMag_u, sdss.modelMag_r, mr_petro, m.z, sdss.petroR50_r \
+		FROM cmurray..mgs_multiwavelength as m			\
+			INNER JOIN  BestDR13..galaxy AS sdss		\
+			on m.specObjID = sdss.specObjID			\
+			LEFT JOIN UKIDSSDR10PLUS..lasExtendedSource AS ukidds	\
+			on ukidds.sourceID = m.ukidds_largeID			\
+			WHERE ukidds.sourceID IS NULL 		")
+
+# Get the results
+rows = cursor.fetchall()
+
+print('Result:', len(rows))
+
+np.save('/home/cmurray/data/ukidss_notallbands.npy',rows)
+
+# Close the database connection #############################################
+db.close()
