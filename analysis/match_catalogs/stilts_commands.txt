@@ -1,0 +1,6 @@
+# I must have used the wrong algorithm before
+
+java -jar stilts.jar tskymatch2 in1=/home/calum/Documents/Mphys_data/match_catalogs/wise_coords.fits in2=/home/calum/Documents/Mphys_data/match_catalogs/random_coordinates.fits out=/home/calum/Documents/Mphys_data/match_catalogs/checking_wise_xmatch.fits error=10
+
+
+
