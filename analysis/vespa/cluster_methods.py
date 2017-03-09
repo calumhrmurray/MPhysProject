@@ -138,10 +138,10 @@ def gmm_clustering(data,scaled_data,n_clusters,n_iter,params,covariance_type):
 
 	cluster_probs = gmm.predict_proba(scaled_data)
 	cluster_membership = np.argmax(cluster_probs.T, axis=0)
-	
-	plt.figure(figsize=(20,10))
 
 	for i in range(gmm.n_components):
+		plt.figure(figsize=(20,10))
+		pt.plot_contour(x,y,lines=15)
 		plt.plot(x[cluster_membership==i],y[cluster_membership==i],'.')
 
 	#plt.xlim(-22,-16)
@@ -151,15 +151,15 @@ def gmm_clustering(data,scaled_data,n_clusters,n_iter,params,covariance_type):
 
 	pt.plot_hist(y,200,'l',set_bin_size=True,bin_size=0.1,normed=False)
 
-	for i in range(3):
+	for i in range(gmm.n_components):
 		pt.plot_hist(y[cluster_membership==i],200,str(i), set_bin_size=True, bin_size=0.1, normed=False)
 	plt.legend()   
 
 	cluster_membership = np.argmax(cluster_probs.T[:2], axis=0)
-	
-	plt.figure(figsize=(20,10))
 
 	for i in range(gmm.n_components):
+		plt.figure(figsize=(20,10))
+		pt.plot_contour(x,y,lines=15)
 		plt.plot(x[cluster_membership==i],y[cluster_membership==i],'.')
 
 	#plt.xlim(-22,-16)
@@ -171,7 +171,9 @@ def gmm_clustering(data,scaled_data,n_clusters,n_iter,params,covariance_type):
 
 	for i in range(2):
 		pt.plot_hist(y[cluster_membership==i],200,str(i), set_bin_size=True, bin_size=0.1, normed=False)
-	plt.legend()   
+	plt.legend()  
+
+	return cluster_probs 
 
 
 	
