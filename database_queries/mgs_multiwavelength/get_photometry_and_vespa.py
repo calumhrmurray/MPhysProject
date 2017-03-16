@@ -1,0 +1,66 @@
+#/usr/bin/python
+
+import mx.ODBC.unixODBC as odbc
+import numpy as np
+
+# Connect to the database
+db = odbc.DriverConnect("DSN=ramses17;UID=wsaro;PWD=wsaropw")
+
+# Initiate the Cursor
+cursor = db.cursor()
+ 
+# show table links, large
+cursor.execute("SELECT  m.specObjID, \
+			gal.m_stellar, gal.m_stellar_error, SUM(hr.mass)/115. , 	\
+			d.dustVal, m.z, zoo.p_el_debiased, zoo.p_cs_debiased,	\
+			sdss.u, sdss.g, sdss.r, sdss.i, sdss.z,			\
+			sdss.petroMag_r, sdss.petroR50_r,			\
+			sdss.u, sdss.g, sdss.r, sdss.i, sdss.z,			\
+			sdss.petroMag_r, sdss.petroR50_r,			\
+			ukidds.yPetroMag, ukidds.hPetroMag, ukidds.kPetroMag, 	\
+			wise.w1mpro, wise.w2mpro, wise.w3mpro, wise.w4mpro, 	\
+			galex.nuv_mag, galex.fuv_mag  				\
+		FROM cmurray..mgs_multiwavelength as m			\
+			INNER JOIN  BestDR13..galaxy AS sdss		\
+			on m.specObjID = sdss.specObjID			\
+			INNER JOIN UKIDSSDR10PLUS..lasSource AS ukidds	\
+ 			on m.ukidds_largeID = ukidds.sourceID 		\
+			INNER JOIN WISE..wise_allskysc AS wise 		\
+			on m.wise_largeID = wise.cntr			\
+			INNER JOIN GalexGR6..photoObjAll AS galex 	\
+			on m.galex_largeID = galex.objID		\
+ 			INNER JOIN BestDR13..PhotoObjDR7 as dr7		\
+ 			on sdss.ObjID = dr7.dr8ObjID			\
+			INNER JOIN BestDR13..zooSpec as zoo		\
+			on sdss.ObjID = zoo.ObjID			\
+			INNER JOIN VESPA..lookUpTable as l		\
+			on dr7.specObjID = l.specObjID			\
+				INNER JOIN VESPA..GalProp as gal		\
+				on l.indexP = gal.indexP			\
+				INNER JOIN VESPA..DustProp as d			\
+				on l.indexP = d.indexP				\
+				INNER JOIN VESPA..HRBinProp as hr		\
+				on l.indexP = hr.indexP				\
+				AND gal.runID = 4				\
+				AND d.runID = 4					\
+				AND d.dustID = 2				\
+				AND hr.runID = 4				\
+				AND hr.binID < 5				\
+			GROUP BY m.specObjID, gal.m_stellar, gal.m_stellar_error, \
+				d.dustVal,  m.z, zoo.p_el_debiased, zoo.p_cs_debiased, \
+				sdss.u, sdss.g, sdss.r, sdss.i, sdss.z,		\
+				sdss.petroMag_r, sdss.petroR50_r,		\
+				ukidds.yPetroMag, ukidds.hPetroMag, ukidds.kPetroMag, 	\
+				wise.w1mpro, wise.w2mpro, wise.w3mpro, wise.w4mpro, 	\
+				galex.nuv_mag, galex.fuv_mag  	")
+
+# Get the results
+rows = cursor.fetchall()
+
+print('Result:', len(rows))
+
+# save results in numpy array
+np.save('/home/cmurray/data/photvespa_properties.npy',rows)
+
+# Close the database connection
+db.close()
