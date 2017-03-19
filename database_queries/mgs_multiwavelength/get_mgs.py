@@ -10,11 +10,12 @@ db = odbc.DriverConnect("DSN=ramses17;Database=BestDR13;UID=wsaro;PWD=wsaropw")
 cursor = db.cursor()
 
 # Execute the Query
-cursor.execute("SELECT g.petroMag_r, s.z, g.modelMag_u, g.modelMag_g, g.modelMag_r, g.modelMag_i,g.modelMag_z, g.modelMagErr_u ,g.modelMagErr_g , g.modelMagErr_i,g.modelMagErr_r, g.modelMagErr_z, s.specObjID, s.bestObjID \
- FROM galaxy as g			\
- INNER JOIN specObj as s		\
+cursor.execute("SELECT  s.specObjID, g.objID, g.petroMag_r, s.z, g.modelMag_u - g.modelMag_r \
+ FROM specObj as s			\
+ JOIN galaxy as g		\
  on g.specObjID = s.specObjID	\
- WHERE s.primTarget = 0x00000040")
+ WHERE s.primTarget = 0x00000040 \
+ AND g.objID = s.bestObjID")
 
 # Get the results
 rows = cursor.fetchall()
@@ -24,6 +25,8 @@ results_array = []
 
 # length of data obtained
 print(len(rows))
+
+rows = np.array(rows,dtype=int)
 
 # save results in numpy array
 np.save('/home/cmurray/data/final_mgs_array.npy',rows)

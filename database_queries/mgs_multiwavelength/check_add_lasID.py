@@ -16,9 +16,8 @@ cursor.execute("SELECT COUNT(DISTINCT x.masterObjID), COUNT(DISTINCT x.slaveObjI
  	INNER JOIN UKIDSSDR10PLUS..lasSourceXDR8PhotoObj AS x 	\
  	on m.objID=x.slaveObjid			\
 	WHERE x.distanceMins IN (SELECT MIN(distanceMins) \
-		FROM UKIDSSDR10PLUS..lasSourceXDR8PhotoObj as in_x	\
-		WHERE in_x.slaveObjid = m.objID		\
-		AND in_x.masterObjID = x.masterObjID);")
+		FROM UKIDSSDR10PLUS..lasSourceXDR8PhotoObj	\
+		WHERE masterObjID = x.masterObjID)")
 
 # Get the results
 rows = cursor.fetchall()

@@ -31,7 +31,7 @@ for row in rows:
 	print(row)
 
 # show table
-cursor.execute("SELECT COUNT(objID) FROM cmurray..mgs_multiwavelength")
+cursor.execute("SELECT COUNT(DISTINCT ObjID) FROM cmurray..mgs_multiwavelength")
 # Get the results
 print(cursor.fetchall())
 
