@@ -97,5 +97,5 @@ def plot_moc(moc, order=None, antialias=0, filename=None,
 
     if filename is not None:
         plt.savefig(filename)
-    else:
-        plt.show()
+    
+    plt.show()
