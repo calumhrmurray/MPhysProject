@@ -21,15 +21,19 @@ SET cmurray..mgs_multiwavelength.ukidssID = x.masterObjID	\
 FROM cmurray..mgs_multiwavelength as m 		\
  	INNER JOIN UKIDSSDR10PLUS..lasSourceXDR8PhotoObj AS x 	\
  	on m.ObjID=x.slaveObjid			\
-	WHERE x.distanceMins < 0.0166667 AND x.distanceMins IN (SELECT MIN(distanceMins) \
+	WHERE x.distanceMins < 0.01 AND x.distanceMins IN (SELECT MIN(distanceMins) \
 		FROM UKIDSSDR10PLUS..lasSourceXDR8PhotoObj	\
-		WHERE masterObjID = x.masterObjID);")
+		WHERE masterObjID = x.masterObjID)		\
+	AND x.distanceMins IN (SELECT MIN(distanceMins) \
+		FROM UKIDSSDR10PLUS..lasSourceXDR8PhotoObj	\
+		WHERE slaveObjid = m.objID)")
 
  
 # show table 
-cursor.execute("SELECT COUNT(DISTINCT fluxObjID), COUNT(DISTINCT specObjID),	\
+cursor.execute("SELECT COUNT(DISTINCT ObjID), COUNT(DISTINCT specObjID),	\
                        COUNT(ukidssID), COUNT(DISTINCT ukidssID)	\
-		FROM cmurray..mgs_multiwavelength")
+		FROM cmurray..mgs_multiwavelength			\
+		WHERE ukidssID IS NOT NULL")
 
 # Get the results
 rows = cursor.fetchall()
@@ -39,6 +43,6 @@ print('ukidssID:',rows)
 
 
 # Commit the change
-#db.commit()
+db.commit()
 # Close the database connection
 db.close()

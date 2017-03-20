@@ -14,14 +14,17 @@ cursor = db.cursor()
 sql_string = 'SELECT x.slaveObjID, x.distanceMins, p.ra, p.dec, las.ra, las.dec, m.z \
 FROM cmurray..mgs_multiwavelength as m 		\
 	INNER JOIN UKIDSSDR10PLUS..lasSourceXwise_allskysc AS x \
-	on m.lasID=x.masterObjID				\
+	on m.ukidssID=x.masterObjID				\
  	INNER JOIN UKIDSSDR10PLUS..lasSource as las	\
  	on las.sourceID = x.masterObjID		\
  	INNER JOIN WISE..wise_allskysc as p		\
  	on p.cntr = x.slaveObjID  			\
 	WHERE x.distanceMins IN (SELECT MIN(distanceMins) \
-		FROM UKIDSSDR10PLUS..lasSourceXwise_allskysc as in_x	\
-		WHERE in_x.masterObjID = las.sourceID); ' 
+		FROM UKIDSSDR10PLUS..lasSourceXwise_allskysc	\
+		WHERE masterObjID = x.masterObjID)		\
+	AND x.distanceMins IN (SELECT MIN(distanceMins) \
+		FROM UKIDSSDR10PLUS..lasSourceXwise_allskysc	\
+		WHERE slaveObjid = p.cntr) ' 
 	
 cursor.execute(sql_string)
 
@@ -40,14 +43,14 @@ np.save('/home/cmurray/data/xmatch_nearest_wise.npy',rows)
 sql_string = 'SELECT x.slaveObjID, x.distanceMins, p.ra, p.dec, las.ra, las.dec, m.z \
 FROM cmurray..mgs_multiwavelength as m 		\
 	INNER JOIN UKIDSSDR10PLUS..lasSourceXwise_allskysc AS x \
-	on m.lasID=x.masterObjID				\
+	on m.ukidssID=x.masterObjID				\
  	INNER JOIN UKIDSSDR10PLUS..lasSource as las	\
  	on las.sourceID = x.masterObjID		\
  	INNER JOIN WISE..wise_allskysc as p		\
  	on p.cntr = x.slaveObjID  			\
 	WHERE x.distanceMins < 0.004 AND x.distanceMins IN (SELECT MIN(distanceMins) \
 		FROM UKIDSSDR10PLUS..lasSourceXwise_allskysc as in_x	\
-		WHERE in_x.masterObjID = m.lasID); ' 
+		WHERE in_x.masterObjID = m.ukidssID); ' 
 	
 cursor.execute(sql_string)
 
@@ -66,14 +69,14 @@ np.save('/home/cmurray/data/xmatch_small_wise.npy',rows)
 sql_string = 'SELECT x.slaveObjID, x.distanceMins, p.ra, p.dec, las.ra, las.dec, m.z \
 FROM cmurray..mgs_multiwavelength as m 		\
 	INNER JOIN UKIDSSDR10PLUS..lasSourceXwise_allskysc AS x \
-	on m.lasID=x.masterObjID				\
+	on m.ukidssID=x.masterObjID				\
  	INNER JOIN UKIDSSDR10PLUS..lasSource as las	\
  	on las.sourceID = x.masterObjID		\
  	INNER JOIN WISE..wise_allskysc as p		\
  	on p.cntr = x.slaveObjID  			\
 	WHERE x.distanceMins < 0.008 AND x.distanceMins IN (SELECT MIN(distanceMins) \
 		FROM UKIDSSDR10PLUS..lasSourceXwise_allskysc as in_x	\
-		WHERE in_x.masterObjID = m.lasID); ' 
+		WHERE in_x.masterObjID = m.ukidssID); ' 
 	
 cursor.execute(sql_string)
 

@@ -15,14 +15,17 @@ cursor = db.cursor()
 sql_string = 'SELECT x.slaveObjID, x.distanceMins, p.ra, p.dec, las.ra, las.dec, m.z \
 FROM cmurray..mgs_multiwavelength as m 		\
 	INNER JOIN UKIDSSDR10PLUS..lasSourceXGR6PhotoObjAll AS x \
-	on m.lasID=x.masterObjID				\
- 	INNER JOIN UKIDSSDR10PLUS..lasSource as las	\
- 	on las.sourceID = x.masterObjID		\
+	on m.ukidssID=x.masterObjID				\
  	INNER JOIN GalexGR6..photoObjAll as p		\
  	on p.objID = x.slaveObjID  			\
+ 	INNER JOIN UKIDSSDR10PLUS..lasSource as las	\
+ 	on las.sourceID = x.masterObjID		\
 	WHERE x.distanceMins IN (SELECT MIN(distanceMins) \
-		FROM UKIDSSDR10PLUS..lasSourceXGR6PhotoObjAll as in_x	\
-		WHERE in_x.masterObjID = m.lasID); ' 
+		FROM UKIDSSDR10PLUS..lasSourceXGR6PhotoObjAll	\
+		WHERE masterObjID = x.masterObjID)		\
+	AND x.distanceMins IN (SELECT MIN(distanceMins) \
+		FROM UKIDSSDR10PLUS..lasSourceXGR6PhotoObjAll	\
+		WHERE slaveObjid = p.objID)' 
 	
 cursor.execute(sql_string)
 
@@ -41,14 +44,17 @@ np.save('/home/cmurray/data/xmatch_nearest_galex.npy',rows)
 sql_string = 'SELECT x.slaveObjID, x.distanceMins, p.ra, p.dec, las.ra, las.dec, m.z \
 FROM cmurray..mgs_multiwavelength as m 		\
 	INNER JOIN UKIDSSDR10PLUS..lasSourceXGR6PhotoObjAll AS x \
-	on m.lasID=x.masterObjID				\
+	on m.ukidssID=x.masterObjID				\
  	INNER JOIN UKIDSSDR10PLUS..lasSource as las	\
  	on las.sourceID = x.masterObjID		\
  	INNER JOIN GalexGR6..photoObjAll as p		\
  	on p.objID = x.slaveObjID  			\
-	WHERE x.distanceMins < 0.02 AND x.distanceMins IN (SELECT MIN(distanceMins) \
-		FROM UKIDSSDR10PLUS..lasSourceXGR6PhotoObjAll as in_x	\
-		WHERE in_x.masterObjID = m.lasID); ' 
+	WHERE x.distanceMins IN (SELECT MIN(distanceMins) \
+		FROM UKIDSSDR10PLUS..lasSourceXGR6PhotoObjAll	\
+		WHERE masterObjID = x.masterObjID)		\
+	AND x.distanceMins IN (SELECT MIN(distanceMins) \
+		FROM UKIDSSDR10PLUS..lasSourceXGR6PhotoObjAll	\
+		WHERE slaveObjid = m.objID) ' 
 	
 cursor.execute(sql_string)
 
@@ -67,14 +73,17 @@ np.save('/home/cmurray/data/xmatch_small_galex.npy',rows)
 sql_string = 'SELECT x.slaveObjID, x.distanceMins, p.ra, p.dec, las.ra, las.dec, m.z \
 FROM cmurray..mgs_multiwavelength as m 		\
 	INNER JOIN UKIDSSDR10PLUS..lasSourceXGR6PhotoObjAll AS x \
-	on m.lasID=x.masterObjID				\
+	on m.ukidssID=x.masterObjID				\
  	INNER JOIN UKIDSSDR10PLUS..lasSource as las	\
  	on las.sourceID = x.masterObjID		\
  	INNER JOIN GalexGR6..photoObjAll as p		\
  	on p.objID = x.slaveObjID  			\
-	WHERE x.distanceMins < 0.04 AND x.distanceMins IN (SELECT MIN(distanceMins) \
-		FROM UKIDSSDR10PLUS..lasSourceXGR6PhotoObjAll as in_x	\
-		WHERE in_x.masterObjID = m.lasID); ' 
+	WHERE x.distanceMins IN (SELECT MIN(distanceMins) \
+		FROM UKIDSSDR10PLUS..lasSourceXGR6PhotoObjAll	\
+		WHERE masterObjID = x.masterObjID)		\
+	AND x.distanceMins IN (SELECT MIN(distanceMins) \
+		FROM UKIDSSDR10PLUS..lasSourceXGR6PhotoObjAll	\
+		WHERE slaveObjid = m.objID) ' 
 	
 cursor.execute(sql_string)
 
