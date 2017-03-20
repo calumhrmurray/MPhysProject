@@ -13,7 +13,7 @@ db = odbc.DriverConnect("DSN=ramses17;UID=wsaro;PWD=wsaropw")
 cursor = db.cursor()
 
 # get all MGS ###############################################
-cursor.execute("SELECT sdss.modelMag_u, sdss.modelMag_r, sdss.petroMag_r, m.z, sdss.petroR50_r \
+cursor.execute("SELECT sdss.modelMag_u, sdss.modelMag_r, sdss.petroMag_r, sdss.z, sdss.petroR50_r \
 		FROM cmurray..mgs_multiwavelength as m			\
 			INNER JOIN  BestDR13..galaxy AS sdss		\
 			on m.specObjID = sdss.specObjID")
@@ -28,7 +28,7 @@ np.save('/home/cmurray/data/all_mgs_colours.npy',rows)
 
 
 # get all MGS in ukidss ##########################################
-cursor.execute("SELECT sdss.modelMag_u, sdss.modelMag_r, sdss.petroMag_r, m.z, sdss.petroR50_r \
+cursor.execute("SELECT sdss.modelMag_u, sdss.modelMag_r, sdss.petroMag_r, sdss.z, sdss.petroR50_r \
 		FROM cmurray..mgs_multiwavelength as m			\
  			INNER JOIN UKIDSSDR10PLUS..lasSource AS ukidss	\
  			on m.ukidssID = ukidss.sourceID 		\
@@ -45,7 +45,7 @@ print('Result:', len(rows))
 np.save('/home/cmurray/data/all_ukidss_colours.npy',rows)
 
 # get all MGS in galex ##############################################
-cursor.execute("SELECT sdss.modelMag_u, sdss.modelMag_r,sdss.petroMag_r, m.z, sdss.petroR50_r \
+cursor.execute("SELECT sdss.modelMag_u, sdss.modelMag_r,sdss.petroMag_r, sdss.z, sdss.petroR50_r \
 		FROM cmurray..mgs_multiwavelength as m			\
 			INNER JOIN GalexGR6..photoObjAll AS galex 	\
 			on m.galexID = galex.objID		\
@@ -62,7 +62,7 @@ print('Result:', len(rows))
 np.save('/home/cmurray/data/all_galex_colours.npy',rows)
 
 # get all MGS in wise #####################################
-cursor.execute("SELECT sdss.modelMag_u, sdss.modelMag_r, sdss.petroMag_r, m.z, sdss.petroR50_r \
+cursor.execute("SELECT sdss.modelMag_u, sdss.modelMag_r, sdss.petroMag_r, sdss.z, sdss.petroR50_r \
 		FROM cmurray..mgs_multiwavelength as m			\
 			INNER JOIN WISE..wise_allskysc AS wise 		\
 			on m.wiseID = wise.cntr			\
@@ -79,7 +79,7 @@ print('Result:', len(rows))
 np.save('/home/cmurray/data/all_wise_colours.npy',rows)
 
 # get all MGS in multiwavelength ###################################
-cursor.execute("SELECT sdss.modelMag_u, sdss.modelMag_r, sdss.petroMag_r, m.z, sdss.petroR50_r \
+cursor.execute("SELECT sdss.modelMag_u, sdss.modelMag_r, sdss.petroMag_r, sdss.z, sdss.petroR50_r \
 		FROM cmurray..mgs_multiwavelength as m			\
  			INNER JOIN UKIDSSDR10PLUS..lasSource AS ukidss	\
  			on m.ukidssID = ukidss.sourceID 		\
