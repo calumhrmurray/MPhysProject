@@ -30,7 +30,7 @@ cursor.execute("SELECT 	galex.fuv_mag, galex.nuv_mag,  \
 			INNER JOIN GalexGR6..photoObjAll AS galex 	\
 			on m.galex_largeID = galex.objID		\
 			INNER JOIN  BestDR13..galaxy AS sdss		\
-			on m.specObjID = sdss.specObjID")
+			on m.specObjID = spec.specObjID")
 
 # Get the results
 rows = cursor.fetchall()

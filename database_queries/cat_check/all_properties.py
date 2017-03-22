@@ -1,5 +1,8 @@
 #/usr/bin/python
 
+# this script gets colour information for each galaxy depending on which surveys it is in!
+# only u,r, mr petro, z, petroR50_r (to calculate surface brightness)
+
 import mx.ODBC.unixODBC as odbc
 import numpy as np
 
@@ -8,9 +11,10 @@ db = odbc.DriverConnect("DSN=ramses17;UID=wsaro;PWD=wsaropw")
 
 # Initiate the Cursor
 cursor = db.cursor()
- 
-# show table links, large
-cursor.execute("SELECT 	galex.fuv_mag, galex.nuv_mag,  \
+
+# get all MGS ###############################################
+cursor.execute("SELECT sdss.modelMag_u, sdss.modelMag_r, sdss.petroMag_r, spec.z, sdss.petroR50_r, \
+		galex.fuv_mag, galex.nuv_mag,  \
 		sdss.modelMag_u, sdss.modelMag_g, sdss.modelMag_r, 		\
 		sdss.modelMag_i,sdss.modelMag_z,				\
 		ukidss.yPetroMag, ukidss.j_1PetroMag, ukidss.hPetroMag, ukidss.kPetroMag, \
@@ -20,17 +24,26 @@ cursor.execute("SELECT 	galex.fuv_mag, galex.nuv_mag,  \
 		sdss.modelMagErr_i, sdss.modelMagErr_z,	\
 		ukidss.yPetroMagErr, ukidss.j_1PetroMagErr, ukidss.hPetroMagErr, \
 		ukidss.kPetroMagErr, 		\
-		wise.w1sigmpro, wise.w2sigmpro, wise.w3sigmpro, wise.w4sigmpro,	\
-		mr_petro, m.z			\
+		wise.w1sigmpro, wise.w2sigmpro, wise.w3sigmpro, wise.w4sigmpro	\
 		FROM cmurray..mgs_multiwavelength as m			\
  			INNER JOIN UKIDSSDR10PLUS..lasSource AS ukidss	\
- 			on m.ukidds_largeID = ukidss.sourceID 		\
+ 			on m.ukidssID = ukidss.sourceID 		\
 			INNER JOIN WISE..wise_allskysc AS wise 		\
-			on m.wise_largeID = wise.cntr			\
+			on m.wiseID = wise.cntr			\
 			INNER JOIN GalexGR6..photoObjAll AS galex 	\
-			on m.galex_largeID = galex.objID		\
+			on m.galexID = galex.objID		\
 			INNER JOIN  BestDR13..galaxy AS sdss		\
-			on m.specObjID = sdss.specObjID")
+			on m.specObjID = sdss.specObjID			\
+			INNER JOIN BestDR13..specObj as spec		\
+			on m.specObjID = spec.specObjID		\
+				WHERE galex.fov_radius < 0.55   \
+				AND ukidss.yppErrBits  < 256	\
+				AND ukidss.j_1ppErrBits < 256	\
+				AND ukidss.hppErrBits < 256	\
+				AND ukidss.kppErrBits < 256	\
+				AND wise.w1snr > 8		\
+				AND wise.w2snr > 8		\
+				")
 
 # Get the results
 rows = cursor.fetchall()
@@ -38,7 +51,8 @@ rows = cursor.fetchall()
 print('Result:', len(rows))
 
 # save results in numpy array
-np.save('/home/cmurray/data/multiwavelength_magnitudes.npy',rows)
+np.save('/home/cmurray/data/cat_check_properties.npy',rows)
 
-# Close the database connection
+
+# Close the database connection #############################################
 db.close()
