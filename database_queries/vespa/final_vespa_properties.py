@@ -11,7 +11,7 @@ cursor = db.cursor()
  
 # show table links, large
 cursor.execute("SELECT gal.m_stellar, gal.m_stellar_error, SUM(hr.mass)/115. , 	\
-			d.dustVal, SUM(hr.Z)/5., spec.z, zoo.p_el_debiased, zoo.p_cs_debiased,	\
+			d.dustVal, SUM(hr.Z)/5., m.z, zoo.p_el_debiased, zoo.p_cs_debiased,	\
 			zoo.p_mg,		\
 			sdss.u, sdss.g, sdss.r, sdss.i, sdss.z,			\
 			sdss.modelMagErr_u ,sdss.modelMagErr_g , sdss.modelMagErr_r,	\
@@ -42,7 +42,7 @@ cursor.execute("SELECT gal.m_stellar, gal.m_stellar_error, SUM(hr.mass)/115. , 	
 				AND hr.runID = 4				\
 				AND hr.binID < 5				\
 			GROUP BY m.specObjID, gal.m_stellar, gal.m_stellar_error, \
-				d.dustVal, spec.z, zoo.p_el_debiased, zoo.p_cs_debiased, \
+				d.dustVal, m.z, zoo.p_el_debiased, zoo.p_cs_debiased, \
 				zoo.p_mg,		\
 				sdss.u, sdss.g, sdss.r, sdss.i, sdss.z,		\
 				sdss.modelMagErr_u ,sdss.modelMagErr_g , sdss.modelMagErr_r,	\
