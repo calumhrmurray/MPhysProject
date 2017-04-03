@@ -29,19 +29,6 @@ FROM cmurray..mgs_multiwavelength as m 		\
 		WHERE slaveObjid = m.objID)")
 
  
-# show table 
-cursor.execute("SELECT COUNT(DISTINCT ObjID), COUNT(DISTINCT specObjID),	\
-                       COUNT(ukidssID), COUNT(DISTINCT ukidssID)	\
-		FROM cmurray..mgs_multiwavelength			\
-		WHERE ukidssID IS NOT NULL")
-
-# Get the results
-rows = cursor.fetchall()
-
-print('ukidssID:',rows)
-
-
-
 # Commit the change
 db.commit()
 # Close the database connection
